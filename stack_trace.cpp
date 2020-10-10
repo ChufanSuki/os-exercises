@@ -56,7 +56,7 @@ print_trace (void)
       } else 
         printf("%s\n", strings[i]);
       int* upper_ebp = (int *) *ebp;
-      printf("(0x%0x) ", *ebp);
+      printf("$ebp(0x%0x) ", *ebp);
       for (int i = 0; i < 5; i++) {
         printf("0x%0x ", *(ebp+i));
       }
