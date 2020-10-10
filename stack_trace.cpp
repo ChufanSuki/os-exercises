@@ -43,15 +43,22 @@ print_trace (void)
       }
       if (begin_name && begin_offset && end_offset && function_address_begin && function_address_end) {
         int status = -4;
-        *begin_name++ = '\0';
-        *begin_offset++ = '\0';
-        *end_offset++ = '\0';
+        (*begin_name) = '\0';
+        begin_name++;
+        (*begin_offset) = '\0';
+        begin_offset++;
+        (*end_offset) = '\0';
+        end_offset++;
+        *function_address_begin = '\0';
+        function_address_begin++;
+        *function_address_end = '\0';
         char *ret = abi::__cxa_demangle(begin_name, name, &name_size, &status);
+        //  printf("DEBUG: ret: %s name: %s\n", ret, name);
         if (status == 0) {
           name = ret;
-          printf("%s:%s+%s\n", strings[i], name, begin_offset);
+          printf("[%s] %s:%s+%s\n", function_address_begin, strings[i], name, begin_offset);
         } else{
-          printf("%s:%s()+%s\n", strings[i], begin_name, begin_offset);
+          printf("[%s] %s:%s()+%s\n", function_address_begin, strings[i], begin_name, begin_offset);
         }
       } else 
         printf("%s\n", strings[i]);
@@ -61,11 +68,11 @@ print_trace (void)
         printf("0x%0x ", *(ebp+i));
       }
       printf("\n");
-      ebp = upper_ebp;
-      if (*ebp == 0) {
-        printf("$ebp reach 0\n");
+      if (upper_ebp == NULL) {
+        printf("$ebp reached 0\n");
         break;
       }
+      ebp = upper_ebp;
     }
   }
   free(name);
